@@ -126,10 +126,9 @@ class ClipBoardHistory {
 	}
 	
 	save() {
-		console.log(this.data, this.history);
-		return;
 		var items = {};
-		items[STORAGE_KEY] = data;
+		items[STORAGE_KEY_HISTORY] = this.history;
+		items[STORAGE_KEY_DATA] = this.data;
 		chrome.storage.local.set(items);
 	}
 	
