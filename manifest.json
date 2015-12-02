@@ -3,6 +3,7 @@
 	"description": "clipboardの履歴を保存して使い回ししやすくするアプリ",
 	"version": "0.1",
 	"permissions": [
+		"alwaysOnTopWindows",
 		"storage",
 		"clipboardRead"
 	],

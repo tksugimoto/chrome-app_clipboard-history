@@ -160,3 +160,8 @@ var ClipboardConnector = (function () {
 		set: set
 	}
 })();
+
+/**********************************************/
+document.getElementById("alwaysOnTop").onchange = function (){
+	chrome.app.window.current().setAlwaysOnTop(this.checked)
+};
