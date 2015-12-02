@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			#container li {
+				min-height: 2em;
+				font-size: 20px;
+			}
+			#clipboardConnectorInput {
+				margin-left: -200%;
+			}
+			.button-container {
+				float: right;
+			}
+			.button-container:after {
+				content: "";
+				clear: both;
+				display: block;
+			}
+			.button-container button {
+				margin-left: 5px;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>クリップボード履歴</h1>
+		<ol id="container"></ol>
+		<input type="text" id="clipboardConnectorInput">
+		<script src="main.js"></script>
+	</body>
+</html>

@@ -1,0 +1,21 @@
+﻿{
+	"name": "クリップボード履歴",
+	"description": "clipboardの履歴を保存して使い回ししやすくするアプリ",
+	"version": "0.1",
+	"permissions": [
+		"storage",
+		"clipboardRead"
+	],
+		
+	"icons": {
+		"128": "icon/icon-128.png"
+	},
+			
+	"app": {
+		"background": {
+			"scripts": [
+				"background.js"
+			]
+		}
+	}
+}
