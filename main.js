@@ -44,6 +44,7 @@ new Promise(function (resolve, reject) {
 		var elem = document.createElement("li");
 		elem.id = ID_PREFIX + id;
 		elem.innerText = clipboardText;
+		elem.classList.add("clearfix");
 		
 		var buttonContainer = document.createElement("div");
 		buttonContainer.classList.add("button-container");
