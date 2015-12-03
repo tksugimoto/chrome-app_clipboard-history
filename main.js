@@ -109,6 +109,8 @@ class ClipBoardHistory {
 		this.eventListenerMap.remove.forEach((fn) => {
 			fn(id);
 		});
+		// TODO: save()の効率化
+		this.save();
 	}
 	
 	cutoff(remainLength) {
