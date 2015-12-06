@@ -132,9 +132,7 @@ new Promise(function (resolve, reject) {
 
 function startHistory(clipBoardHistory, clipBoardMemo) {
 	var latestClipboardText = clipBoardHistory.latest();
-	clipBoardHistory.forEach(function (clipboardText, id) {
-		appendHistory(clipboardText, id);
-	});
+	clipBoardHistory.forEach(appendHistory);
 	window.setInterval(function () {
 		var clipboardText = ClipboardConnector.get();
 		if (clipboardText && latestClipboardText !== clipboardText && clipBoardHistory.latest() !== clipboardText) {
@@ -189,12 +187,8 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 
 
 function startMemo(clipBoardMemo) {
-	clipBoardMemo.forEach(function (clipboardText, id) {
-		appendMemo(clipboardText, id);
-	});
-	clipBoardMemo.addEventListener("add", function (clipboardText, id) {
-		appendMemo(clipboardText, id);
-	});
+	clipBoardMemo.forEach(appendMemo);
+	clipBoardMemo.addEventListener("add", appendMemo);
 	clipBoardMemo.addEventListener("remove", function (id) {
 		var elem = document.getElementById(ID_PREFIX + id);
 		if (elem) {
