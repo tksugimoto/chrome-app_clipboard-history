@@ -133,7 +133,7 @@ new Promise(function (resolve, reject) {
 function startHistory(clipBoardHistory, clipBoardMemo) {
 	var latestClipboardText = clipBoardHistory.latest();
 	clipBoardHistory.forEach(function (clipboardText, id) {
-		appendHistory(clipboardText, id, clipBoardHistory);
+		appendHistory(clipboardText, id);
 	});
 	window.setInterval(function () {
 		var clipboardText = ClipboardConnector.get();
@@ -141,7 +141,7 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 			latestClipboardText = clipboardText;
 			// 先頭に追加
 			var id = clipBoardHistory.add(clipboardText);
-			appendHistory(clipboardText, id, clipBoardHistory);
+			appendHistory(clipboardText, id);
 		}
 	}, OBSERVATION_INTERVAL_MS);
 	clipBoardHistory.addEventListener("remove", function (id) {
@@ -151,7 +151,7 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 		}
 	});
 
-	function appendHistory(clipboardText, id, clipBoardHistory) {
+	function appendHistory(clipboardText, id) {
 		var elem = document.createElement("li");
 		elem.id = ID_PREFIX + id;
 		elem.innerText = clipboardText;
