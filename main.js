@@ -120,7 +120,7 @@ function startHistory(clipBoardHistory) {
 	});
 	window.setInterval(function () {
 		var clipboardText = ClipboardConnector.get();
-		if (latestClipboardText !== clipboardText && clipBoardHistory.latest() !== clipboardText) {
+		if (clipboardText && latestClipboardText !== clipboardText && clipBoardHistory.latest() !== clipboardText) {
 			latestClipboardText = clipboardText;
 			// 先頭に追加
 			var id = clipBoardHistory.add(clipboardText);
