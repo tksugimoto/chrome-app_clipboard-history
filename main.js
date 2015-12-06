@@ -26,7 +26,7 @@ new Promise(function (resolve, reject) {
 	});
 	window.setInterval(function () {
 		var clipboardText = ClipboardConnector.get();
-		if (latestClipboardText !== clipboardText) {
+		if (latestClipboardText !== clipboardText && clipBoardHistory.latest() !== clipboardText) {
 			latestClipboardText = clipboardText;
 			// 先頭に追加
 			var id = clipBoardHistory.add(clipboardText);
