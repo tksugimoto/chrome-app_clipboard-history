@@ -190,10 +190,10 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 
 function startMemo(clipBoardMemo) {
 	clipBoardMemo.forEach(function (clipboardText, id) {
-		appendHistory(clipboardText, id);
+		appendMemo(clipboardText, id);
 	});
 	clipBoardMemo.addEventListener("add", function (clipboardText, id) {
-		appendHistory(clipboardText, id);
+		appendMemo(clipboardText, id);
 	});
 	clipBoardMemo.addEventListener("remove", function (id) {
 		var elem = document.getElementById(ID_PREFIX + id);
@@ -202,7 +202,7 @@ function startMemo(clipBoardMemo) {
 		}
 	});
 
-	function appendHistory(clipboardText, id) {
+	function appendMemo(clipboardText, id) {
 		var elem = document.createElement("li");
 		elem.id = ID_PREFIX + id;
 		elem.innerText = clipboardText;
