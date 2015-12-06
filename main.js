@@ -9,7 +9,8 @@ class ClipBoardHistory {
 		};
 		this.maxHistoryLength = maxHistoryLength;
 		this.eventListenerMap = {
-			remove: []
+			remove: [],
+			add: []
 		};
 	}
 	
@@ -23,6 +24,9 @@ class ClipBoardHistory {
 			this.cutoff(this.maxHistoryLength);
 		}
 		this.save();
+		this.eventListenerMap.add.forEach((fn) => {
+			fn(clipboardText, id);
+		});
 		
 		return id;
 	}
@@ -98,22 +102,35 @@ class ClipBoardHistory {
 
 var STORAGE_KEY_HISTORY = "history";
 var STORAGE_KEY_DATA = "data";
+var STORAGE_KEY_MEMO_HISTORY = "memo-history";
+var STORAGE_KEY_MEMO_DATA = "memo-data";
 var MAX_HISTORY_LENGTH = 10;
 var ID_PREFIX = "hisotory-";
 var OBSERVATION_INTERVAL_MS = 300; // [ms]
 
-var container = document.getElementById("container");
+var historyContainer = document.getElementById("history-container");
+var memoContainer = document.getElementById("memo-container");
 
 new Promise(function (resolve, reject) {
 	var clipBoardHistory = new ClipBoardHistory(STORAGE_KEY_HISTORY, STORAGE_KEY_DATA, MAX_HISTORY_LENGTH);
-	clipBoardHistory.load().then(function () {
-		resolve(clipBoardHistory);
+	var clipBoardMemo = new ClipBoardHistory(STORAGE_KEY_MEMO_HISTORY, STORAGE_KEY_MEMO_DATA, 0);
+	Promise.all([
+		clipBoardHistory.load(),
+		clipBoardMemo.load()
+	]).then(function () {
+		resolve({
+			clipBoardHistory: clipBoardHistory,
+			clipBoardMemo: clipBoardMemo
+		});
 	});
-}).then(function (clipBoardHistory) {
-	startHistory(clipBoardHistory);
+}).then(function (arg) {
+	var clipBoardHistory = arg.clipBoardHistory;
+	var clipBoardMemo = arg.clipBoardMemo;
+	startHistory(clipBoardHistory, clipBoardMemo);
+	startMemo(clipBoardMemo);
 });
 
-function startHistory(clipBoardHistory) {
+function startHistory(clipBoardHistory, clipBoardMemo) {
 	var latestClipboardText = clipBoardHistory.latest();
 	clipBoardHistory.forEach(function (clipboardText, id) {
 		appendHistory(clipboardText, id, clipBoardHistory);
@@ -152,6 +169,13 @@ function startHistory(clipBoardHistory) {
 		};
 		buttonContainer.appendChild(copyButton);
 		
+		var memoButton = document.createElement("button");
+		memoButton.innerText = "メモ登録";
+		memoButton.onclick = function () {
+			clipBoardMemo.add(clipboardText);
+		};
+		buttonContainer.appendChild(memoButton);
+		
 		var removeButton = document.createElement("button");
 		removeButton.innerText = "削除";
 		removeButton.onclick = function () {
@@ -159,7 +183,50 @@ function startHistory(clipBoardHistory) {
 		};
 		buttonContainer.appendChild(removeButton);
 		
-		container.insertBefore(elem, container.firstChild);
+		historyContainer.insertBefore(elem, historyContainer.firstChild);
+	}
+}
+
+
+function startMemo(clipBoardMemo) {
+	clipBoardMemo.forEach(function (clipboardText, id) {
+		appendHistory(clipboardText, id);
+	});
+	clipBoardMemo.addEventListener("add", function (clipboardText, id) {
+		appendHistory(clipboardText, id);
+	});
+	clipBoardMemo.addEventListener("remove", function (id) {
+		var elem = document.getElementById(ID_PREFIX + id);
+		if (elem) {
+			elem.parentNode.removeChild(elem);
+		}
+	});
+
+	function appendHistory(clipboardText, id) {
+		var elem = document.createElement("li");
+		elem.id = ID_PREFIX + id;
+		elem.innerText = clipboardText;
+		elem.classList.add("clearfix");
+		
+		var buttonContainer = document.createElement("div");
+		buttonContainer.classList.add("button-container");
+		elem.appendChild(buttonContainer);
+		
+		var copyButton = document.createElement("button");
+		copyButton.innerText = "コピー";
+		copyButton.onclick = function () {
+			ClipboardConnector.set(clipboardText);
+		};
+		buttonContainer.appendChild(copyButton);
+		
+		var removeButton = document.createElement("button");
+		removeButton.innerText = "削除";
+		removeButton.onclick = function () {
+			clipBoardMemo.remove(id);
+		};
+		buttonContainer.appendChild(removeButton);
+		
+		memoContainer.insertBefore(elem, memoContainer.firstChild);
 	}
 }
 /**********************************************/

@@ -12,11 +12,11 @@
 			#alwaysOnTopContainer label {
 				cursor: pointer;
 			}
-			#container li {
+			.container li {
 				min-height: 2em;
 				font-size: 20px;
 			}
-			#container li:hover {
+			.container li:hover {
 				background-color: #E2E5DC;
 			}
 			#clipboardConnectorInput {
@@ -38,11 +38,14 @@
 		</style>
 	</head>
 	<body>
-		<h1>クリップボード履歴</h1>
 		<p id="alwaysOnTopContainer">
 			<input type="checkbox" id="alwaysOnTop"><label for="alwaysOnTop">常に最前面表示</label>
 		</p>
-		<ol id="container"></ol>
+		<h1>クリップボードメモ</h1>
+		<ul class="container" id="memo-container"></ul>
+		<hr>
+		<h1>クリップボード履歴</h1>
+		<ol class="container" id="history-container"></ol>
 		<textarea id="clipboardConnectorInput"></textarea>
 		<script src="main.js"></script>
 	</body>
