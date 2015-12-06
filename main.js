@@ -1,5 +1,101 @@
 ﻿"use strict";
 
+
+class ClipBoardHistory {
+	constructor(historyKey, dataKey, maxHistoryLength) {
+		this.key = {
+			history: historyKey,
+			data: dataKey
+		};
+		this.maxHistoryLength = maxHistoryLength;
+		this.eventListenerMap = {
+			remove: []
+		};
+	}
+	
+	add(clipboardText) {
+		var id = Date.now();
+		
+		this.history.push(id);
+		this.data[id] = clipboardText;
+		
+		if (this.maxHistoryLength > 0) {
+			this.cutoff(this.maxHistoryLength);
+		}
+		this.save();
+		
+		return id;
+	}
+	
+	latest() {
+		var len = this.history.length;
+		if (len > 0) {
+			return this.data[this.history[len - 1]];
+		} else {
+			return null;
+		}
+	}
+	
+	remove(id) {
+		delete this.data[id];
+		var index = this.history.indexOf(id);
+		if (index !== -1) {
+			this.history.splice(index, 1);
+		}
+		this.eventListenerMap.remove.forEach((fn) => {
+			fn(id);
+		});
+		// TODO: save()の効率化
+		this.save();
+	}
+	
+	cutoff(remainLength) {
+		var removedHistory = this.history.splice(0, this.history.length - remainLength);
+		removedHistory.forEach((id) => {
+			// 少し無駄
+			this.remove(id);
+		});
+	}
+	
+	forEach(fn) {
+		// arrow演算子を使えばself = thisを使わなくて良い
+		this.history.forEach((id) => {
+			fn(this.data[id], id);
+		});
+	}
+	
+	save() {
+		var items = {};
+		items[this.key.history] = this.history;
+		items[this.key.data] = this.data;
+		chrome.storage.local.set(items);
+	}
+	load() {
+		var keys = {};
+		// デフォルト値: []
+		keys[this.key.history] = [];
+		keys[this.key.data] = {};
+		var callback = (items, resolve) => {
+			this.history = items[this.key.history];
+			this.data = items[this.key.data];
+			resolve();
+		};
+		return new Promise(function (resolve, reject) {
+			chrome.storage.local.get(keys, function (items) {
+				callback(items, resolve);
+			});
+		});
+	}
+	
+	addEventListener(type, listener) {
+		if (typeof listener === "function") {
+			this.eventListenerMap[type].push(listener);
+		}
+	}
+}
+
+/*******************************************/
+
 var STORAGE_KEY_HISTORY = "history";
 var STORAGE_KEY_DATA = "data";
 var MAX_HISTORY_LENGTH = 10;
@@ -9,14 +105,8 @@ var OBSERVATION_INTERVAL_MS = 300; // [ms]
 var container = document.getElementById("container");
 
 new Promise(function (resolve, reject) {
-	var keys = {};
-	// デフォルト値: []
-	keys[STORAGE_KEY_HISTORY] = [];
-	keys[STORAGE_KEY_DATA] = {};
-	chrome.storage.local.get(keys, function (items) {
-		var history = items[STORAGE_KEY_HISTORY];
-		var data = items[STORAGE_KEY_DATA];
-		var clipBoardHistory = new ClipBoardHistory(history, data);
+	var clipBoardHistory = new ClipBoardHistory(STORAGE_KEY_HISTORY, STORAGE_KEY_DATA, MAX_HISTORY_LENGTH);
+	clipBoardHistory.load().then(function () {
 		resolve(clipBoardHistory);
 	});
 }).then(function (clipBoardHistory) {
@@ -70,77 +160,6 @@ new Promise(function (resolve, reject) {
 });
 /**********************************************/
 
-class ClipBoardHistory {
-	constructor(history, data) {
-		this.history = history;
-		this.data = data;
-		this.eventListenerMap = {
-			remove: []
-		};
-	}
-	
-	add(clipboardText) {
-		var id = Date.now();
-		
-		this.history.push(id);
-		this.data[id] = clipboardText;
-		
-		this.cutoff(MAX_HISTORY_LENGTH);
-		this.save();
-		
-		return id;
-	}
-	
-	latest() {
-		var len = this.history.length;
-		if (len > 0) {
-			return this.data[this.history[len - 1]];
-		} else {
-			return null;
-		}
-	}
-	
-	remove(id) {
-		delete this.data[id];
-		var index = this.history.indexOf(id);
-		if (index !== -1) {
-			this.history.splice(index, 1);
-		}
-		this.eventListenerMap.remove.forEach((fn) => {
-			fn(id);
-		});
-		// TODO: save()の効率化
-		this.save();
-	}
-	
-	cutoff(remainLength) {
-		var removedHistory = this.history.splice(0, this.history.length - remainLength);
-		removedHistory.forEach((id) => {
-			// 少し無駄
-			this.remove(id);
-		});
-	}
-	
-	forEach(fn) {
-		// arrow演算子を使えばself = thisを使わなくて良い
-		this.history.forEach((id) => {
-			fn(this.data[id], id);
-		});
-	}
-	
-	save() {
-		var items = {};
-		items[STORAGE_KEY_HISTORY] = this.history;
-		items[STORAGE_KEY_DATA] = this.data;
-		chrome.storage.local.set(items);
-	}
-	
-	addEventListener(type, listener) {
-		if (typeof listener === "function") {
-			this.eventListenerMap[type].push(listener);
-		}
-	}
-}
 
 var ClipboardConnector = (function () {
 	var clipboardConnectorInput = document.getElementById("clipboardConnectorInput");
