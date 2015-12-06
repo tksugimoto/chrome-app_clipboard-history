@@ -110,6 +110,10 @@ new Promise(function (resolve, reject) {
 		resolve(clipBoardHistory);
 	});
 }).then(function (clipBoardHistory) {
+	startHistory(clipBoardHistory);
+});
+
+function startHistory(clipBoardHistory) {
 	var latestClipboardText = clipBoardHistory.latest();
 	clipBoardHistory.forEach(function (clipboardText, id) {
 		appendHistory(clipboardText, id, clipBoardHistory);
@@ -157,7 +161,7 @@ new Promise(function (resolve, reject) {
 		
 		container.insertBefore(elem, container.firstChild);
 	}
-});
+}
 /**********************************************/
 
 
