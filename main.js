@@ -4,7 +4,7 @@ var STORAGE_KEY_HISTORY = "history";
 var STORAGE_KEY_DATA = "data";
 var MAX_HISTORY_LENGTH = 10;
 var ID_PREFIX = "hisotory-";
-var OBSERVATION_INTERVAL = 300; // [ms]
+var OBSERVATION_INTERVAL_MS = 300; // [ms]
 
 var container = document.getElementById("container");
 
@@ -32,7 +32,7 @@ new Promise(function (resolve, reject) {
 			var id = clipBoardHistory.add(clipboardText);
 			appendHistory(clipboardText, id, clipBoardHistory);
 		}
-	}, OBSERVATION_INTERVAL);
+	}, OBSERVATION_INTERVAL_MS);
 	clipBoardHistory.addEventListener("remove", function (id) {
 		var elem = document.getElementById(ID_PREFIX + id);
 		if (elem) {
