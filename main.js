@@ -152,8 +152,11 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 	function appendHistory(clipboardText, id) {
 		var elem = document.createElement("li");
 		elem.id = ID_PREFIX + id;
-		elem.innerText = clipboardText;
 		elem.classList.add("clearfix");
+		
+		var pre = document.createElement("pre");
+		pre.innerText = clipboardText;
+		elem.appendChild(pre);
 		
 		var buttonContainer = document.createElement("div");
 		buttonContainer.classList.add("button-container");
@@ -199,8 +202,11 @@ function startMemo(clipBoardMemo) {
 	function appendMemo(clipboardText, id) {
 		var elem = document.createElement("li");
 		elem.id = ID_PREFIX + id;
-		elem.innerText = clipboardText;
 		elem.classList.add("clearfix");
+		
+		var pre = document.createElement("pre");
+		pre.innerText = clipboardText;
+		elem.appendChild(pre);
 		
 		var buttonContainer = document.createElement("div");
 		buttonContainer.classList.add("button-container");
