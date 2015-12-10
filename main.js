@@ -255,6 +255,6 @@ var ClipboardConnector = (function () {
 })();
 
 /**********************************************/
-document.getElementById("alwaysOnTop").onchange = function (){
-	chrome.app.window.current().setAlwaysOnTop(this.checked)
-};
+document.getElementById("alwaysOnTop").addEventListener("change", function (event) {
+	chrome.app.window.current().setAlwaysOnTop(event.checked);
+});
