@@ -150,41 +150,14 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 	});
 
 	function appendHistory(clipboardText, id) {
-		var elem = document.createElement("li");
-		elem.id = ID_PREFIX + id;
-		elem.classList.add("clearfix");
-		
-		var buttonContainer = document.createElement("div");
-		buttonContainer.classList.add("button-container");
-		elem.appendChild(buttonContainer);
-		
-		var pre = document.createElement("pre");
-		pre.innerText = clipboardText;
-		elem.appendChild(pre);
-		
-		var copyButton = document.createElement("button");
-		copyButton.innerText = "コピー";
-		copyButton.onclick = function () {
+		append(historyContainer, clipboardText, id, function () {
 			latestClipboardText = clipboardText;
 			ClipboardConnector.set(clipboardText);
-		};
-		buttonContainer.appendChild(copyButton);
-		
-		var memoButton = document.createElement("button");
-		memoButton.innerText = "メモ登録";
-		memoButton.onclick = function () {
-			clipBoardMemo.add(clipboardText);
-		};
-		buttonContainer.appendChild(memoButton);
-		
-		var removeButton = document.createElement("button");
-		removeButton.innerText = "削除";
-		removeButton.onclick = function () {
+		}, function () {
 			clipBoardHistory.remove(id);
-		};
-		buttonContainer.appendChild(removeButton);
-		
-		historyContainer.insertBefore(elem, historyContainer.firstChild);
+		}, function () {
+			clipBoardMemo.add(clipboardText);
+		});
 	}
 }
 
@@ -200,34 +173,45 @@ function startMemo(clipBoardMemo) {
 	});
 
 	function appendMemo(clipboardText, id) {
-		var elem = document.createElement("li");
-		elem.id = ID_PREFIX + id;
-		elem.classList.add("clearfix");
-		
-		var buttonContainer = document.createElement("div");
-		buttonContainer.classList.add("button-container");
-		elem.appendChild(buttonContainer);
-		
-		var pre = document.createElement("pre");
-		pre.innerText = clipboardText;
-		elem.appendChild(pre);
-		
-		var copyButton = document.createElement("button");
-		copyButton.innerText = "コピー";
-		copyButton.onclick = function () {
+		append(memoContainer, clipboardText, id, function () {
 			ClipboardConnector.set(clipboardText);
-		};
-		buttonContainer.appendChild(copyButton);
-		
-		var removeButton = document.createElement("button");
-		removeButton.innerText = "削除";
-		removeButton.onclick = function () {
+		}, function () {
 			clipBoardMemo.remove(id);
-		};
-		buttonContainer.appendChild(removeButton);
-		
-		memoContainer.insertBefore(elem, memoContainer.firstChild);
+		}, null);
 	}
+}
+
+function append(container, text, id, copyCallback, removeCallback, add2memoCallback) {
+	var elem = document.createElement("li");
+	elem.id = ID_PREFIX + id;
+	elem.classList.add("clearfix");
+	
+	var buttonContainer = document.createElement("div");
+	buttonContainer.classList.add("button-container");
+	elem.appendChild(buttonContainer);
+	
+	var pre = document.createElement("pre");
+	pre.innerText = text;
+	elem.appendChild(pre);
+	
+	var copyButton = document.createElement("button");
+	copyButton.innerText = "コピー";
+	copyButton.onclick = copyCallback;
+	buttonContainer.appendChild(copyButton);
+	
+	if (add2memoCallback) {
+		var memoButton = document.createElement("button");
+		memoButton.innerText = "メモ登録";
+		memoButton.onclick = add2memoCallback;
+		buttonContainer.appendChild(memoButton);
+	}
+	
+	var removeButton = document.createElement("button");
+	removeButton.innerText = "削除";
+	removeButton.onclick = removeCallback;
+	buttonContainer.appendChild(removeButton);
+	
+	container.insertBefore(elem, container.firstChild);
 }
 /**********************************************/
 
