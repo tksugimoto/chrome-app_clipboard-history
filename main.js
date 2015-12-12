@@ -154,13 +154,13 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 		elem.id = ID_PREFIX + id;
 		elem.classList.add("clearfix");
 		
-		var pre = document.createElement("pre");
-		pre.innerText = clipboardText;
-		elem.appendChild(pre);
-		
 		var buttonContainer = document.createElement("div");
 		buttonContainer.classList.add("button-container");
 		elem.appendChild(buttonContainer);
+		
+		var pre = document.createElement("pre");
+		pre.innerText = clipboardText;
+		elem.appendChild(pre);
 		
 		var copyButton = document.createElement("button");
 		copyButton.innerText = "コピー";
@@ -204,13 +204,13 @@ function startMemo(clipBoardMemo) {
 		elem.id = ID_PREFIX + id;
 		elem.classList.add("clearfix");
 		
-		var pre = document.createElement("pre");
-		pre.innerText = clipboardText;
-		elem.appendChild(pre);
-		
 		var buttonContainer = document.createElement("div");
 		buttonContainer.classList.add("button-container");
 		elem.appendChild(buttonContainer);
+		
+		var pre = document.createElement("pre");
+		pre.innerText = clipboardText;
+		elem.appendChild(pre);
 		
 		var copyButton = document.createElement("button");
 		copyButton.innerText = "コピー";
