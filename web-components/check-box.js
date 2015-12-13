@@ -1,4 +1,4 @@
-﻿(function (window, document, undefined) {
+﻿(function (window, document) {
 	"use strict";
 	
 	var thatDoc = document;
@@ -6,7 +6,7 @@
 	
 	var template = thisDoc.querySelector('template').content;
 	
-	var MyElementProto = Object.create(HTMLElement.prototype);
+	var MyElementProto = window.Object.create(window.HTMLElement.prototype);
 
 	MyElementProto.createdCallback = function () {
 		this.createShadowRoot();
@@ -22,7 +22,7 @@
 			} else {
 				this.removeAttribute("checked");
 			}
-			var event = new Event("change");
+			var event = new window.Event("change");
 			event.checked = this.checkbox.checked;
 			this.dispatchEvent(event);
 		});
