@@ -15,18 +15,18 @@ class ClipBoardHistory {
 		};
 	}
 	
-	add(clipboardText) {
+	add(obj) {
 		var id = Date.now();
 		
 		this.history.push(id);
-		this.data[id] = clipboardText;
+		this.data[id] = obj;
 		
 		if (this.maxHistoryLength > 0) {
 			this.cutoff(this.maxHistoryLength);
 		}
 		this.save();
 		this.eventListenerMap.add.forEach((fn) => {
-			fn(clipboardText, id);
+			fn(obj, id);
 		});
 		
 		return id;
@@ -136,7 +136,9 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 			latestClipboardText = clipboardText;
 			// 先頭に追加
 			var id = clipBoardHistory.add(clipboardText);
-			appendHistory(clipboardText, id);
+			appendHistory({
+				text: clipboardText
+			}, id);
 		}
 	}, OBSERVATION_INTERVAL_MS);
 	clipBoardHistory.addEventListener("remove", function (id) {
@@ -146,14 +148,17 @@ function startHistory(clipBoardHistory, clipBoardMemo) {
 		}
 	});
 
-	function appendHistory(clipboardText, id) {
+	function appendHistory(obj, id) {
+		var clipboardText = typeof obj === "string" ? obj : obj.text;
 		append(historyContainer, clipboardText, id, function () {
 			latestClipboardText = clipboardText;
 			ClipboardConnector.set(clipboardText);
 		}, function () {
 			clipBoardHistory.remove(id);
 		}, function () {
-			clipBoardMemo.add(clipboardText);
+			clipBoardMemo.add({
+				text: clipboardText
+			});
 		});
 	}
 }
@@ -169,7 +174,8 @@ function startMemo(clipBoardMemo) {
 		}
 	});
 
-	function appendMemo(clipboardText, id) {
+	function appendMemo(obj, id) {
+		var clipboardText = typeof obj === "string" ? obj : obj.text;
 		append(memoContainer, clipboardText, id, function () {
 			ClipboardConnector.set(clipboardText);
 		}, function () {
