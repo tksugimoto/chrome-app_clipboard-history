@@ -178,35 +178,23 @@ function startMemo(clipBoardMemo) {
 	}
 }
 
-function append(container, text, id, copyCallback, removeCallback, add2memoCallback) {
-	var elem = document.createElement("li");
+function append(container, text, id, copyCallback, deleteCallback, add2memoCallback) {
+	var elem = document.createElement("history-item");
 	elem.id = ID_PREFIX + id;
 	elem.classList.add("clearfix");
 	
-	var buttonContainer = document.createElement("div");
-	buttonContainer.classList.add("button-container");
-	elem.appendChild(buttonContainer);
 	
-	var pre = document.createElement("pre");
-	pre.innerText = text;
-	elem.appendChild(pre);
+	elem.setText(text);
 	
-	var copyButton = document.createElement("button");
-	copyButton.innerText = "コピー";
-	copyButton.onclick = copyCallback;
-	buttonContainer.appendChild(copyButton);
+	elem.addEventListener("copy", copyCallback);
 	
 	if (add2memoCallback) {
-		var memoButton = document.createElement("button");
-		memoButton.innerText = "メモ登録";
-		memoButton.onclick = add2memoCallback;
-		buttonContainer.appendChild(memoButton);
+		elem.addEventListener("addMemo", add2memoCallback);
+	} else {
+		elem.removeButton("addMemo");
 	}
 	
-	var removeButton = document.createElement("button");
-	removeButton.innerText = "削除";
-	removeButton.onclick = removeCallback;
-	buttonContainer.appendChild(removeButton);
+	elem.addEventListener("delete", deleteCallback);
 	
 	container.insertBefore(elem, container.firstChild);
 }
