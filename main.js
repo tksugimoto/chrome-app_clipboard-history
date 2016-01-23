@@ -2,10 +2,11 @@
 
 
 class ClipBoardHistory {
-	constructor(historyKey, dataKey, maxHistoryLength) {
+	constructor(key, maxHistoryLength) {
+		var prefix = key ? key + "-" : "";
 		this.key = {
-			history: historyKey,
-			data: dataKey
+			history: prefix + "history",
+			data: prefix + "data"
 		};
 		this.maxHistoryLength = maxHistoryLength;
 		this.eventListenerMap = {
@@ -100,10 +101,6 @@ class ClipBoardHistory {
 
 /*******************************************/
 
-var STORAGE_KEY_HISTORY = "history";
-var STORAGE_KEY_DATA = "data";
-var STORAGE_KEY_MEMO_HISTORY = "memo-history";
-var STORAGE_KEY_MEMO_DATA = "memo-data";
 var MAX_HISTORY_LENGTH = 10;
 var ID_PREFIX = "hisotory-";
 var OBSERVATION_INTERVAL_MS = 300; // [ms]
@@ -112,8 +109,8 @@ var historyContainer = document.getElementById("history-container");
 var memoContainer = document.getElementById("memo-container");
 
 new Promise(function (resolve, reject) {
-	var clipBoardHistory = new ClipBoardHistory(STORAGE_KEY_HISTORY, STORAGE_KEY_DATA, MAX_HISTORY_LENGTH);
-	var clipBoardMemo = new ClipBoardHistory(STORAGE_KEY_MEMO_HISTORY, STORAGE_KEY_MEMO_DATA, 0);
+	var clipBoardHistory = new ClipBoardHistory("", MAX_HISTORY_LENGTH);
+	var clipBoardMemo = new ClipBoardHistory("memo", 0);
 	Promise.all([
 		clipBoardHistory.load(),
 		clipBoardMemo.load()
