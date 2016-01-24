@@ -187,8 +187,6 @@ function startMemo(clipBoardMemo) {
 function append(container, text, id, copyCallback, deleteCallback, add2memoCallback) {
 	var elem = document.createElement("history-item");
 	elem.id = ID_PREFIX + id;
-	elem.classList.add("clearfix");
-	
 	
 	elem.setText(text);
 	
