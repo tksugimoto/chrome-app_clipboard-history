@@ -1,7 +1,12 @@
 ﻿
 <style>
-	.right {
-		float: right;
+	history-item li {
+		position: relative;
+	}
+	.right-top {
+		position: absolute;
+		top: 0;
+		right: 0;
 	}
 	.button-container button {
 		margin-left: 5px;
@@ -10,7 +15,7 @@
 </style>
 <template>
 	<li>
-		<div class="right button-container">
+		<div class="right-top button-container">
 			<button data-type="copy">コピー</button>
 			<button data-type="addMemo">メモ登録</button>
 			<button data-type="delete">削除</button>
